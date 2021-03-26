@@ -1,9 +1,8 @@
 {% extends './base.html' %}
 {% block content %}
-<h2>Rooms</h2>
+<h2>Available Rooms</h2>
 <table id="rooms">
   <tr>
-      <th>Availability</th>
       <th>Room #</th>
       <th>Oceanside</th>
       <th>Suite</th>
@@ -11,10 +10,11 @@
   {% for room in room_list %}
   <tr>
   <tr>
-      <td>{% if room.occupied %}NOT {% endif %}AVAILABLE</td>
+    {% if not room.occupied %}
       <td>{{ room.room_num }}</td>
       <td>{% if room.oceanside  %}Yes{% else %}No{% endif %}</td>
       <td>{% if room.suite  %}Yes{% else %}No{% endif %}</td>
+    {% endif %}
   </tr>
   {% endfor %}
 </table>
