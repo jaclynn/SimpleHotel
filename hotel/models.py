@@ -21,6 +21,7 @@ MAXIMUM_STAY = 7  # makes occupied queries easier
 # Create your models here.
 class Room(models.Model):
     room_num = models.IntegerField(default=0)
+    occupied = models.BooleanField(default=False)
 
     def oceanside(self):
         return self.room_num % 2 == 0
@@ -28,7 +29,7 @@ class Room(models.Model):
     def suite(self):
         return (self.room_num % 10) <= 1
 
-    # occupied works better as a calculated field since it involves a date
+    '''
     def occupied(self, date):
         # there may be a better way to do this...
         bookings = self.booking_set.filter(end__gt=datetime.date.today())
@@ -36,13 +37,18 @@ class Room(models.Model):
             if date in booking.daterange():
                 return True
         return False
+    '''
 
+    def __str__(self):
+        return "Room #" + str(self.room_num)
 
 class Guest(models.Model):
     first = models.CharField(max_length=200)
     last = models.CharField(max_length=200)
     vip_num = models.IntegerField(default=-1)
 
+    def __str__(self):
+        return self.first + ' ' + self.last
 
 class Booking(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -50,21 +56,26 @@ class Booking(models.Model):
     start = models.DateField(default=datetime.date.today)
     length_of_stay = models.IntegerField(default=1)
     end = models.DateField(default=datetime.date.today)
+    price = models.FloatField(default=0.0)
 
     def calc_stay(self):
         self.end = self.start + datetime.timedelta(days=self.length_of_stay)
-        return self.end
+
+    def book_room(self):
+        self.room.occupied = True
+        self.room.save()
 
     def daterange(self):
         return [self.start + datetime.timedelta(days=x) for x in range(1, self.length_of_stay + 1)]
 
-    def price(self):
+    def calc_price(self):
         p = BASE_PRICE  # base price
+        print(p)
         if self.room.oceanside():
             p += OCEANSIDE_SURCHARGE
         if self.room.suite():
             p += SUITE_SURCHARGE
         if self.guest.vip_num > 0:
-            p -= p * 0.8
+            p *= 0.8
         p *= self.length_of_stay
-        return p
+        self.price = p

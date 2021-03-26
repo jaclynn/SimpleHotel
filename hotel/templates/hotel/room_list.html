@@ -1,16 +1,17 @@
 {% extends './base.html' %}
 {% block content %}
 <h2>Rooms</h2>
-<a href=""><button class="btn">Add Owner</button></a>
-<table id="owners">
+<table id="rooms">
   <tr>
-    <th>Room #</th>
-    <th>Oceanside</th>
-    <th>Suite</th>
+      <th>Availability</th>
+      <th>Room #</th>
+      <th>Oceanside</th>
+      <th>Suite</th>
   </tr>
   {% for room in room_list %}
   <tr>
   <tr>
+      <td>{% if room.occupied %}NOT {% endif %}AVAILABLE</td>
       <td>{{ room.room_num }}</td>
       <td>{% if room.oceanside  %}Yes{% else %}No{% endif %}</td>
       <td>{% if room.suite  %}Yes{% else %}No{% endif %}</td>
