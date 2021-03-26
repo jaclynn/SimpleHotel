@@ -26,7 +26,7 @@ class Room(models.Model):
         return self.room_num % 2 == 0
 
     def suite(self):
-        return self.room_num % 10 <= 1
+        return (self.room_num % 10) <= 1
 
     # occupied works better as a calculated field since it involves a date
     def occupied(self, date):

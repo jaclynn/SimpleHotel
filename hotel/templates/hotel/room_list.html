@@ -1,0 +1,20 @@
+{% extends './base.html' %}
+{% block content %}
+<h2>Rooms</h2>
+<a href=""><button class="btn">Add Owner</button></a>
+<table id="owners">
+  <tr>
+    <th>Room #</th>
+    <th>Oceanside</th>
+    <th>Suite</th>
+  </tr>
+  {% for room in room_list %}
+  <tr>
+  <tr>
+      <td>{{ room.room_num }}</td>
+      <td>{% if room.oceanside  %}Yes{% else %}No{% endif %}</td>
+      <td>{% if room.suite  %}Yes{% else %}No{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
